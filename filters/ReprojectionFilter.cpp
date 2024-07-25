@@ -181,6 +181,12 @@ PointViewSet ReprojectionFilter::run(PointViewPtr view)
     PointViewSet viewSet;
     PointViewPtr outView = view->makeNew();
 
+    if (view->empty())
+    {
+        log()->get(LogLevel::Warning) << "No input points.\n";
+        return viewSet;
+    }
+
     createTransform(view->spatialReference());
 
     PointRef point(*view, 0);
