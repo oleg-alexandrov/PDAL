@@ -60,6 +60,10 @@ public:
         m_view(nullptr), m_viewIdx(0)
     {}
 
+    PointRef(PointRef&& r) : m_table(r.m_table), m_idx(r.m_idx),
+        m_view(r.m_view), m_viewIdx(r.m_viewIdx)
+    {}
+
     PointRef(const PointRef& r) : m_table(r.m_table), m_idx(r.m_idx),
         m_view(nullptr), m_viewIdx(0)
     {}
