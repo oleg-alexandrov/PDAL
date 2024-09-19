@@ -9,6 +9,9 @@
 namespace hexer
 {
 
+BaseGrid::~BaseGrid()
+{}
+
 void BaseGrid::addPoint(Point& p)
 {
     if (sampling())
@@ -16,7 +19,7 @@ void BaseGrid::addPoint(Point& p)
         handleSamplePoint(p);
         return;
     }
-    // find the hexagon that the point is contained within 
+    // find the hexagon that the point is contained within
     HexId h = findHexagon(p);
 
     // add the hexagon to the grid, and increment its count if it exists.
@@ -24,7 +27,7 @@ void BaseGrid::addPoint(Point& p)
 
     // if the hexagon of interest has reached the density threshold, we see if it
     // has neighbors at edge 0. If not, it's added to our list of possible starting points
-    // for path finding (m_possibleRoots). If the hexagon at edge 3 was in m_possibleRoots we 
+    // for path finding (m_possibleRoots). If the hexagon at edge 3 was in m_possibleRoots we
     // remove it since it no longer has a non-dense neighbor at edge 0.
     if (count == m_denseLimit)
     {
@@ -52,7 +55,7 @@ void BaseGrid::setHexes(const std::vector<HexId>& ids)
 void BaseGrid::handleSamplePoint(Point& p)
 {
     m_sample.push_back(p);
-    if (m_sample.size() >= m_maxSample) {
+    if (m_sample.size() >= (size_t)m_maxSample) {
         double height = computeHexSize();
         processHeight(height);
         for (Point p : m_sample) {
@@ -105,7 +108,7 @@ void BaseGrid::findShape(HexId root)
     Segment cur(root, 0);
 
     do {
-        // removes possible roots that are passed over, and sets information 
+        // removes possible roots that are passed over, and sets information
         // to be used in parentOrChild()
         if (cur.horizontal())
         {
@@ -155,7 +158,7 @@ std::pair<Segment, Segment> BaseGrid::nextSegments(const Segment& s) const
 void BaseGrid::findParentPaths()
 {
     for (auto& p : m_paths) {
-        // the only real difference between parentOrChild in the two grid 
+        // the only real difference between parentOrChild in the two grid
         // types is whether they look down i or j.
         parentOrChild(p);
 
@@ -174,11 +177,11 @@ void BaseGrid::parentOrChild(Path& p)
     HexId hex = p.rootHex();
     // get the i or j component of the hexagon, depending on which indexing
     // system is being moved through (-I for H3Grid, -J for HexGrid)
-    while (inGrid(hex)) 
+    while (inGrid(hex))
     {
         // see if the current hexagon has a path at edge 0 or 3.
         auto it = m_hexPaths.find(hex);
-        if (it != m_hexPaths.end()) 
+        if (it != m_hexPaths.end())
         {
             // get the path associated with the current hexagon
             Path *parentPath = it->second;
@@ -219,7 +222,7 @@ double BaseGrid::computeHexSize()
 
 void BaseGrid::toWKT(std::ostream& output) const
 {
-    auto outputPath = [this,&output](Path *p)
+    auto outputPath = [&output](Path *p)
     {
         output << "(";
         p->toWKT(output);

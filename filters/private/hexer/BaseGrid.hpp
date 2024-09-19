@@ -18,19 +18,21 @@ namespace hexer
 class HexGrid;
 class H3Grid;
 
-class BaseGrid
+class PDAL_DLL BaseGrid
 {
 public:
+    virtual ~BaseGrid();
+
     void addPoint(Point& p);
     bool isDense(HexId hex);
 
     // exported for testing
-    PDAL_DLL void findShapes();
-    PDAL_DLL void findParentPaths();
-    PDAL_DLL void toWKT(std::ostream& output) const;
+    void findShapes();
+    void findParentPaths();
+    void toWKT(std::ostream& output) const;
 
-    // test function: adds pre-defined hexagon coordinates to the grid 
-    PDAL_DLL void setHexes(const std::vector<HexId>& hexes);
+    // test function: adds pre-defined hexagon coordinates to the grid
+    void setHexes(const std::vector<HexId>& hexes);
 
     void setSampleSize(int num)
         {m_maxSample = num; }
