@@ -1,5 +1,4 @@
-FROM condaforge/mambaforge:latest as build
-MAINTAINER Howard Butler <howard@hobu.co>
+FROM condaforge/mambaforge:latest AS build
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
@@ -10,7 +9,7 @@ ARG GITHUB_SERVER_URL="https://github.com"
 
 SHELL ["conda", "run", "-n", "pdal", "/bin/bash", "-c"]
 
-RUN mamba install -c conda-forge git compilers conda-pack cmake make ninja sysroot_linux-64=2.17 && \
+RUN mamba install -c conda-forge git compilers conda-pack cmake make ninja  && \
     mamba install --yes -c conda-forge pdal --only-deps
 
 RUN git clone "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" pdal && \
@@ -24,9 +23,11 @@ RUN mkdir -p pdal/build && \
         -DCMAKE_LIBRARY_PATH:FILEPATH="$CONDA_PREFIX/lib" \
         -DCMAKE_INCLUDE_PATH:FILEPATH="$CONDA_PREFIX/include" \
         -DCMAKE_INSTALL_PREFIX="$CONDA_PREFIX" \
-        -DBUILD_PLUGIN_CPD=OFF \
+        -DBUILD_PLUGIN_CPD=ON \
+        -DBUILD_PLUGIN_ARROW=ON \
         -DBUILD_PLUGIN_PGPOINTCLOUD=ON \
         -DBUILD_PLUGIN_NITF=ON \
+        -DBUILD_PLUGIN_TRAJECTORY=ON \
         -DBUILD_PLUGIN_ICEBRIDGE=ON \
         -DBUILD_PLUGIN_HDF=ON \
         -DBUILD_PLUGIN_TILEDB=ON \
